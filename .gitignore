@@ -1,0 +1,7 @@
+**/node_modules/
+**/build/
+# kill all apple crap files
+.DS_Store
+**/.DS_Store
+._.DS_Store
+**/._.DS_Store
