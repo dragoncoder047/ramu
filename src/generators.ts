@@ -13,7 +13,7 @@ export class NoteGenerator<T extends Uni> {
         this.timeLeftInCurrentNote = 0;
     }
 
-    apply(song: AutoSong<T>, prevNotes: Note[]): Note | undefined {
+    apply(song: AutoSong<T>, prevNotes: Note[]): Note {
         throw new Error("Please implement this method");
     }
 
@@ -61,7 +61,7 @@ export class NoteGenerator<T extends Uni> {
 }
 
 export class RootNoteGenerator<T extends Uni> extends NoteGenerator<T> {
-    apply(song: AutoSong<T>, prevNotes: Note[]): Note | undefined {
+    apply(song: AutoSong<T>, prevNotes: Note[]): Note {
         const notesPerOctave = song.data.notesPerOctave;
         return {
             root: Random.randrange(0, notesPerOctave),
@@ -71,7 +71,18 @@ export class RootNoteGenerator<T extends Uni> extends NoteGenerator<T> {
 }
 
 export class DurationGenerator<T extends Uni> extends NoteGenerator<T> {
-    apply(song: AutoSong<T>, prevNotes: Note[]): Note | undefined {
+    apply(song: AutoSong<T>, prevNotes: Note[]): Note {
         return { duration: this.reduceRules(song, prevNotes).duration };
+    }
+}
+
+export class DrumTrackGenerator<T extends Uni> extends DurationGenerator<T> {
+    instrument: string;
+    constructor(rules: Rule<T>[], instrument: string) {
+        super(rules);
+        this.instrument = instrument;
+    }
+    apply(song: AutoSong<T>, prevNotes: Note[]): Note {
+        return { ...super.apply(song, prevNotes), instrument: this.instrument };
     }
 }

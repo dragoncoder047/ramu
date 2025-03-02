@@ -1,4 +1,5 @@
 import { NoteGenerator } from "./generators";
+import { Instrument } from "./instrument";
 
 export type Note = {
     duration: number;
