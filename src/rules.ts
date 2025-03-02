@@ -43,7 +43,7 @@ export class RemainingInBeatRule<T extends Uni> extends Rule<T> {
         this.getWeight = getWeight;
     }
     getNote(song: AutoSong<T>, generator: NoteGenerator<T>): Note {
-        return { duration: 1 - song.getState().beatPos };
+        return { duration: 1 - song.getState().beatPos! };
     }
 }
 

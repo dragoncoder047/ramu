@@ -1,9 +1,5 @@
 import { NoteGenerator } from "./generators";
 
-export interface Instrument {
-    generateSamples(pitch: number, duration: number): number[];
-}
-
 export type Note = {
     duration: number;
     pitch?: number;
@@ -44,8 +40,8 @@ export class AutoSong<T extends Uni> {
             const note = gen.step(this, out);
             if (note) out.push(note);
         }
-        this.#state.time += 1 / this.data.notesPerBeat;
-        this.#state.beatPos = this.#state.time % 1;
+        this.#state.time! += 1 / this.data.notesPerBeat;
+        this.#state.beatPos = this.#state.time! % 1;
         this.#stateHistory.push({ ...this.#state });
         return out;
     }

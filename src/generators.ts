@@ -50,9 +50,10 @@ export class NoteGenerator<T extends Uni> {
         var n = hist.length - 1;
         back += this.timeLeftInCurrentNote;
         while (n >= 0 && back <= 0) {
-            back += hist[n].duration;
+            back += hist[n]!.duration;
             n--;
         }
+        // TODO: this is wrong
         const note = n >= 0 ? hist[n] : undefined;
         if (note) return { ...note, duration: back };
         return undefined;

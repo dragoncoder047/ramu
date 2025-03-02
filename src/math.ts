@@ -19,7 +19,7 @@ class RNG {
     }
     choose<T>(from: T[], weights?: number[]): T {
         if (!weights) {
-            return from[this.randrange(0, from.length)];
+            return from[this.randrange(0, from.length)]!;
         } else if (weights.length != from.length) {
             throw new Error("Weights array is not the same length as values array");
         }
@@ -27,8 +27,8 @@ class RNG {
         const randVal = this.randrange(0, one);
         var sum = 0;
         for (var i = 0; i < from.length; i++) {
-            sum += weights[i];
-            if (sum > randVal) return from[i];
+            sum += weights[i]!;
+            if (sum > randVal) return from[i]!;
         }
         throw "unreachable";
     }
