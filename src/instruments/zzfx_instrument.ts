@@ -1,6 +1,6 @@
 import { ZZFX } from "zzfx";
 import { Instrument } from "../instrument";
-import { Note } from "../song";
+import { Note } from "..";
 
 const defaultParams = [
     /* volume = */ 1,
@@ -36,21 +36,21 @@ export class ZzFXDrumInstrument implements Instrument {
         // this.zzArray[1] = 0; // allow zero randomness here!!
         this.id = id;
     }
-    play(note?: Note): AudioBufferSourceNode | undefined {
+    play(note: Note, _tickLen: number): AudioBufferSourceNode | undefined {
         const zz = this.zzArray.slice();
         // set master volume
-        zz[0]! *= note?.volume ?? 1;
+        zz[0]! *= note.volume ?? 1;
         return ZZFX.play(...zz);
     }
 }
 
-export class ZzFXInstrument extends ZzFXDrumInstrument{
+export class ZzFXInstrument extends ZzFXDrumInstrument {
     pitchMod: number[];
     constructor(id: string, zzArray: (number | undefined)[], pitchMod = defaultPitchMod) {
         super(id, zzArray);
         this.pitchMod = pitchMod;
     }
-    play(note: Note) {
+    play(note: Note, tickLen: number) {
         if (!note.pitch) return;
         const zz = this.zzArray.slice();
         // set master volume
@@ -58,7 +58,7 @@ export class ZzFXInstrument extends ZzFXDrumInstrument{
         // set pitch
         for (var i of this.pitchMod) zz[i]! *= note.pitch;
         // set sustain from duration and attack time
-        zz[4]! = Math.max(0, note.duration - zz[3]!);
+        zz[4]! = Math.max(0, note.duration * tickLen - zz[3]!);
         return ZZFX.play(...zz);
     }
 }

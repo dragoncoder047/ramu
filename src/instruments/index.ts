@@ -1,1 +1,1 @@
-export * from "./zzfx_instrument.ts"
+export * from "./zzfx_instrument"

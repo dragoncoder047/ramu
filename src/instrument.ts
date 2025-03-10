@@ -1,6 +1,6 @@
-import { Note } from "./song";
+import { Note } from ".";
 
 export interface Instrument {
     id: string;
-    play(note: Note): void;
+    play(note: Note, tickLen: number): void;
 }

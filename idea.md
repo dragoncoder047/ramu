@@ -2,15 +2,14 @@
 
 ## Top-down look
 
-The system has a list of "generators" that are called to generate notes.
+The system has a list of generators that are called to generate notes.
 
-The generators work piano-roll style. When a note is emitted, the generator the note was produced by is paused and isn't called again until the note ends.
-
-Each "generator" generates the random notes by choosing from a set of rules, and the weight of each rule and the note associated with it can be algorithmically determined by both the note history and the uniforms.
+Each generator generates the random notes by choosing from a set of rules, and the weight of each rule and the note associated with it can be algorithmically determined by both the note history and the uniforms.
 
 ## Ideas for data pipeline
 
-* The root note generator picks one random pitch and just holds it for a long time. It has a small chance of doing a key-change after this.
+* The rhythmic timeunit generator / master clock generates the time divisions for the rhythms (how many notes to the beat, how many beats per measure, how many measures long the phrase, etc).
+* The root note generator picks one random pitch and just holds it for the duraction of the phrase. It has a small chance of doing a key-change after this.
 * The scale generator picks 5-8 notes, starting with the root note, that sound nice together.
 * Chord progression generates chords by picking 3-5 notes from the scale that are (usually) not dissonant next to each other, possibly an inversion, and how long the chord should last for. Changes only up to 1/2 of the notes in each chord at a time.
 * The chord feeds into the pad generator directly

@@ -9,6 +9,8 @@ export function dissonance(x: number): number {
     return abs(f * p * xm1 / sq(1 + sq(f) * sq(xm1)));
 }
 
+
+
 const abs = Math.abs;
 const sq = (x: number) => x ** 2;
 
@@ -38,7 +40,7 @@ class RNG {
 
     pickOne<T>(a: T, b: T, bias: number): T {
         const breakpoint = 1 / (1 + Math.exp(-bias));
-        return this.random() > breakpoint ? a : b;
+        return this.choose([a, b], [1 - breakpoint, breakpoint]);
     }
 }
 export const Random = new RNG;
