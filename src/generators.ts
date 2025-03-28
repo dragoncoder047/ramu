@@ -1,22 +1,25 @@
-import { State, WFun, wfunify } from ".";
-import { Random } from "./math";
+import { State, Weight, WFun } from ".";
+import { pickRand } from "./weighting";
 
-type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
-type _TupleOf<T, N extends number, R extends T[]> = R['length'] extends N ? R : _TupleOf<T, N, [T, ...R]>;
+type Tuple<T, Len extends number> = Len extends Len ? number extends Len ? T[] : _TupleOf<T, Len, []> : never;
+type _TupleOf<T, Len extends number, Acc extends T[]> = Acc["length"] extends Len ? Acc : _TupleOf<T, Len, [T, ...Acc]>;
 
 export enum RTU {
-    NOTE,
+    SUB_NOTE,
     BEAT,
     MEASURE,
     PHRASE,
     SECTION
 };
 
-export function* masterClock<const N extends number>(bases: Tuple<number, N>, baseWeights: Tuple<number, N>, reUpRhythmAt = RTU.SECTION) {
+export function* masterClock(weightMap: Record<RTU, (Weight | [Weight, Weight])[]>, reUpRhythmAt = RTU.SECTION) {
     var chosenBases: Tuple<number, 5> = [0, 0, 0, 0, 0];
-    const tickers: Tuple<number, 5> = chosenBases.map(_ => 0) as any;
+    const tickers: Tuple<number, 5> = [0, 0, 0, 0, 0];
+    const weightChoosers = Object.fromEntries(Object.entries(weightMap).map(([k, v]) => [k, pickRand(...v)]));
     const reUp = () => {
-        chosenBases = chosenBases.map(_ => Random.choose(bases, baseWeights)) as any;
+        for (var i = 0; i < chosenBases.length; i++) {
+            chosenBases[i] = weightChoosers[i]!({})!;
+        }
     };
     reUp();
     for (; ;) {
@@ -40,14 +43,14 @@ export function* masterClock<const N extends number>(bases: Tuple<number, N>, ba
     }
 }
 
-export function* drumGenerator(instID: string, strengthFun: WFun) {
+export function* drumGenerator(drum: string, strengthFun: WFun) {
     const history: number[] = [];
     var state: State = {};
     for (; ;) {
-        const vol = wfunify(strengthFun)({ ...state, history });
+        const vol = strengthFun({ ...state, history });
         history.push(vol ?? 0);
         state = yield {
-            notes: vol && vol > 0 ? [{ instrument: instID, volume: vol, duration: 1 }] : []
+            notes: vol && vol > 0 ? [{ instrument: drum, volume: vol, duration: 1 }] : []
         };
     }
 }

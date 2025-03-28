@@ -1,5 +1,3 @@
-import { RTU } from "./generators";
-
 export type Note = {
     duration: number;
     pitch?: number;
@@ -11,7 +9,7 @@ export type Note = {
 export type State = Record<string, number | number[]>;
 export type WFun = (state: State) => number | undefined;
 export type Weight = number | WFun;
-export const wfunify = (x: Weight): WFun => (state: State) => typeof x === "number" ? x : x(state);
+export const toWFun = (x: Weight): WFun => (state: State) => typeof x === "number" ? x : x(state);
 
 export type NoteGenerator = Iterator<{ state?: State, notes?: Note[] }, void, State>;
 

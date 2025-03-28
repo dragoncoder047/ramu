@@ -32,7 +32,7 @@ class RNG {
             sum += weights[i]!;
             if (sum > randVal) return from[i]!;
         }
-        throw "unreachable";
+        throw new Error("unreachable");
     }
     percent(pct: number): boolean {
         return pct >= this.randrange(1, 101);

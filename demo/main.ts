@@ -1,25 +1,32 @@
 import { ZzFXDrumInstrument } from "../src/instruments/zzfx_instrument";
 import { AutoSong, SongParams } from "../src";
 import { drumGenerator, masterClock, RTU } from "../src/generators";
-import { backHistory, fracOf, pickRand, reduceMul, startOf } from "../src/weighting";
+import { backHistory, density, fracOf, pickRand, reduceMul, startOf } from "../src/weighting";
 
 const uniforms = {
-    repetitiveness: 5,
-    beatStrength: 5
+    // repetitiveness: 5,
+    // beatStrength: 5
 };
 
 const songParams: SongParams = {
     root: 220 * Math.pow(2, 7 / 12), // == E4
     notesPerOctave: 12,
-    tempo: 400,
+    tempo: 128,
     uniforms,
     generators: [
-        masterClock([2, 3, 4, 5, 6, 7, 8, 9, 11], [50, 50, 100, 4, 20, 2, 50, 6, 1]),
+        masterClock({
+            [RTU.SUB_NOTE]: [[4, 10], [3, 5]],
+            [RTU.BEAT]: [[2, 50], [3, 50], [4, 100], [5, 4], [6, 20], [7, 2], [8, 50], [9, 6], [11, 1]],
+            [RTU.MEASURE]: [[4, 10], [5, 2], [2, 2]],
+            [RTU.PHRASE]: [[4, 10], [2, 1], [6, 2]],
+            [RTU.SECTION]: [1]
+        }),
         drumGenerator("bass",
             pickRand(
-                [startOf(RTU.MEASURE), 500],
+                [1, reduceMul(500, startOf(RTU.BEAT))],
                 [0.2, 1],
                 [0, 100],
+                [density(0.25, 4), reduceMul(density(0.25, 4), 20)],
                 [backHistory((state: any) => state.clockBases?.[RTU.BEAT], RTU.BEAT), 100],
                 [backHistory((state: any) => state.clockBases?.[RTU.MEASURE], RTU.MEASURE), 50]
             )),
@@ -28,14 +35,16 @@ const songParams: SongParams = {
                 [fracOf(0.5, RTU.MEASURE), 500],
                 [0.2, 1],
                 [0, 10],
+                [density(0.2, 4), reduceMul(density(0.8, 4), 20)],
                 [backHistory((state: any) => state.clockBases?.[RTU.BEAT], RTU.BEAT), 100],
                 [backHistory((state: any) => state.clockBases?.[RTU.MEASURE], RTU.MEASURE), 50]
             )),
         drumGenerator("hi-hat",
             pickRand(
-                [1, reduceMul(startOf(RTU.BEAT), () => 10)],
-                [1, reduceMul(fracOf(0.5, RTU.BEAT), () => 10)],
+                [1, reduceMul(startOf(RTU.BEAT), 10)],
+                [0.8, reduceMul(fracOf(0.5, RTU.BEAT), 10)],
                 [0, 10],
+                [density(0.8, 4), reduceMul(density(0.2, 4), 20)],
                 [backHistory((state: any) => state.clockBases?.[RTU.BEAT], RTU.BEAT), 100],
                 [backHistory((state: any) => state.clockBases?.[RTU.MEASURE], RTU.MEASURE), 50]
             )),
@@ -51,8 +60,8 @@ const instruments = [
 ];
 
 function tick() {
-    const timeslice = 60 / autoSong.data.tempo;
     const notes = autoSong.step();
+    const timeslice = 60 / autoSong.data.tempo / (autoSong.state.clockBases as any)![RTU.SUB_NOTE]!;
     notes.forEach(n => {
         if (n.instrument)
             instruments.find(i => i.id === n.instrument)?.play(n, timeslice);
