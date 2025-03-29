@@ -1,19 +1,24 @@
-import { Weight, WFun, toWFun } from ".";
+import { LiteralWeightlist, toWFun, Weight, WFun } from ".";
 import { RTU } from "./generators";
-import { Random } from "./math";
+import { dissonance, Random } from "./math";
 
 export function startOf(which = RTU.SUB_NOTE): WFun {
-    return state => (state?.clock as number[])?.slice(0, which).every(x => x === 0) ? 1 : 0;
+    return state => Number((state.clockRollover as number) >= which);
 }
 
 export function fracOf(frac: number, which = RTU.SUB_NOTE): WFun {
     const pStart = startOf(which - 1);
     return state => {
         if (!pStart(state)) return 0;
-        const tVal = (state?.clock as number[])[which]!;
-        const tMax = (state?.clockBases as number[])[which]!;
+        const tVal = (state.clock as number[])[which]!;
+        const tMax = (state.clockBases as number[])[which]!;
         return tMax * frac > tVal ? 1 : 0;
     }
+}
+
+export function consonanceOfInterval(interval: number): WFun {
+    // TODO: the 2 - is another magic constant
+    return state => 2 - dissonance(Math.pow(2, -(state.notesPerOctave as number)) * interval);
 }
 
 export function backHistory(amount: Weight, column = RTU.MEASURE): WFun {
@@ -42,13 +47,12 @@ export function density(den: Weight, window: Weight): WFun {
 
 // MARK: Higher order WFun
 
-export function pickRand(...choices: (Weight | [Weight, Weight])[]): WFun {
+export function pickRand(...choices: LiteralWeightlist): WFun {
     const fixedChoices = choices.map(v => Array.isArray(v) ? [toWFun(v[0]), toWFun(v[1])] as const : [toWFun(v), () => 1] as const);
     return state => {
         const now = fixedChoices.map(([a, b]) => [a(state), b(state) ?? 1] as const);
         const vThis = now.flatMap(([v, w]) => v !== undefined && !isNaN(w) ? [v] : []);
         const wThis = now.flatMap(([v, w]) => v !== undefined && !isNaN(w) ? [w] : []);
-        console.log(vThis, wThis);
         if (vThis.length === 0 || wThis.every(w => w === 0)) return;
         return Random.choose(vThis, wThis);
     }

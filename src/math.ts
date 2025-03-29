@@ -14,6 +14,8 @@ export function dissonance(x: number): number {
 const abs = Math.abs;
 const sq = (x: number) => x ** 2;
 
+const NORM_MAGIC = 4 * Math.exp(-1 / 2) * Math.SQRT2;
+
 class RNG {
     random = Math.random;
     randrange(lo: number, hi: number): number {
@@ -42,5 +44,20 @@ class RNG {
         const breakpoint = 1 / (1 + Math.exp(-bias));
         return this.choose([a, b], [1 - breakpoint, breakpoint]);
     }
+
+    gaussian(mu: number, sigma: number): number {
+        var z: number;
+        do {
+            var u1 = this.random();
+            var u2 = 1. - this.random();
+            z = NORM_MAGIC * (u1 - 1 / 2) / u2;
+            var zz = z * z / 4;
+        } while (zz > -Math.log(u2));
+        return mu + z * sigma;
+    }
 }
 export const Random = new RNG;
+
+export function pitchToFrequency(pitch: number, root: number, notesPerOctave: number): number {
+    return root * Math.pow(2, pitch / notesPerOctave);
+}
