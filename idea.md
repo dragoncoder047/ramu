@@ -26,3 +26,4 @@ Each generator generates the random notes by choosing from a set of rules, and t
 * Suspense - affects the major or minor intervals
 * Frenzy - affects the overall tempo, as well as repetition of the same note interval
 * Repetitiveness - affects the rhythm and melody
+* Weirdness - kind of self-explanatory
