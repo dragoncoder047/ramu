@@ -1,6 +1,6 @@
 import { AutoSong } from "../src";
 import { changeEvery, constant, drumGenerator, masterClock, rootNoteGenerator, RTU } from "../src/generators";
-import { ZzFXDrumInstrument } from "../src/instruments/zzfx_instrument";
+import { ZzFXDrumInstrument, ZzFXInstrument } from "../src/instruments/zzfx_instrument";
 import { backHistory, consonanceOfInterval, density, fracOf, pickRand, reduceMul, startOf } from "../src/weighting";
 
 const uniforms = {
@@ -68,6 +68,8 @@ const instruments = [
     new ZzFXDrumInstrument("snare", [2, 0, 660, , , .09, 3, , , , , , .2, 2, , , , 1.1]),
     new ZzFXDrumInstrument("bass", [4, 0, 80, , , .2, 1, 4, -2, 6, 50, .15, , 6]),
     new ZzFXDrumInstrument("hi-hat", [, 0, 3520, , , .11, 3, 1.65, , , , , , 2]),
+    new ZzFXInstrument("square", [, 0, , , 1, , , 0, , , , , , , , , , .8, .05]),
+    new ZzFXInstrument("sine", [, 0, , , 1, , , , , , , , , , , , , .8, .05]),
 ];
 
 function tick() {
