@@ -21,6 +21,9 @@ class RNG {
     randrange(lo: number, hi: number): number {
         return Math.floor(this.random() * (hi - lo)) + lo;
     }
+    randint(lo: number, hi: number): number {
+        return Math.floor(this.randrange(lo, hi));
+    }
     choose<T>(from: T[], weights?: number[]): T {
         if (!weights) {
             return from[this.randrange(0, from.length)]!;

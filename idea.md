@@ -1,6 +1,7 @@
 # Ideas for the implementation of Ramu
 
 <https://procjam.com>
+<https://www.langston.com/Papers/amc.pdf>
 
 ## Top-down look
 

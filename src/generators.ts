@@ -89,3 +89,20 @@ export function* rootNoteGenerator(changeEvery: RTU, steps: WFun) {
         state = yield { state: { root: note } };
     }
 }
+
+export function* scaleGenerator(changeEvery: RTU, intervalChooser: WFun) {
+    var state: State = yield;
+    var scale: number[] = [];
+    const chooseScale = () => {
+        scale = [0];
+        while (scale.at(-1)! <= (state.notesPerOctave as number)) {
+            scale.push(scale.at(-1)! + Math.round(intervalChooser({ ...state, scale })!))
+        }
+        scale.pop();
+    };
+    chooseScale();
+    for (; ;) {
+        if ((state.clockRollover as number) >= changeEvery) chooseScale();
+        state = yield { state: { scale } };
+    }
+}
