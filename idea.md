@@ -1,9 +1,20 @@
 # Ideas for the implementation of Ramu
 
-<https://procjam.com>
-<https://www.langston.com/Papers/amc.pdf>
+* <https://procjam.com>
+* <https://www.langston.com/Papers/amc.pdf>
+* <https://sethares.engr.wisc.edu/consemi.html>
+* Use [Tone.js](https://tonejs.github.io/) and <https://github.com/tmhglnd/total-serialism>
 
-## Top-down look
+## General idea based on Langston paper
+
+* Use divvy() to generate rhythmical structure
+  * It subdivides based on dividing by prime numbers
+* Have a Histree class that gets passed to everything that contains history logs based on subdivision level
+* Generate scale by choosing based on 1, 2, or 3 steps until reach octave
+* Generate chords by choosing from scale (or randomly outside of it) based on heuristic for energy, mood, power, etc.
+* Bassline generator is biased towards picking notes from the chord
+
+<!-- ## Top-down look
 
 The system has a list of generators that are called to generate notes.
 
@@ -19,7 +30,7 @@ Each generator generates the random notes by choosing from a set of rules, and t
 * The bassline generator picks notes from the scale but prefers ones from the chord. it is influenced more by the drum track's weights than the melody's weights.
 * MelodyGenerators are composed of a PitchGenerator and a RhythmGenerator that are linked
 * A PitchGenerator just picks random notes which are weighted using a weights array
-* A RhythmGenerator picks random note lengths obeying repetitiveness rules and also allowing a certain heaviness of beats which would make it align to nice lengths more
+* A RhythmGenerator picks random note lengths obeying repetitiveness rules and also allowing a certain heaviness of beats which would make it align to nice lengths more -->
 
 ## Uniforms (can be changed like in a shader)
 

@@ -10,7 +10,7 @@ export function dissonance(x: number): number {
 }
 
 
-
+export const lerp = (t: number, x: number, y: number) => (1 - t) * x + t * y;
 const abs = Math.abs;
 const sq = (x: number) => x ** 2;
 
@@ -57,6 +57,14 @@ class RNG {
             var zz = z * z / 4;
         } while (zz > -Math.log(u2));
         return mu + z * sigma;
+    }
+    subsq(numbers: number[], nextBias: number) {
+        for (var p of numbers) {
+            const pInv = 1 / p;
+            const chance = lerp(nextBias, 1 - pInv, pInv);
+            if (this.random() > chance) return p;
+        }
+        return numbers.at(-1)!;
     }
 }
 export const Random = new RNG;
